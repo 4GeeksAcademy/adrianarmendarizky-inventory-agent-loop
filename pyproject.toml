@@ -1,0 +1,22 @@
+[project]
+name = "adrianarmendarizky-inventory-agent-loop"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "AdrianArmendarizKY", email = "adrianarmendarizky@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.141.1",
+    "openai>=2.53.0",
+    "python-dotenv>=1.2.2",
+    "requests>=2.34.2",
+    "uvicorn>=0.52.1",
+]
+
+[project.scripts]
+adrianarmendarizky-inventory-agent-loop = "adrianarmendarizky_inventory_agent_loop:main"
+
+[build-system]
+requires = ["uv_build>=0.12.1,<0.13.0"]
+build-backend = "uv_build"

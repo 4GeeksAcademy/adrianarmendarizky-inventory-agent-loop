@@ -1,0 +1,7 @@
+actor,message,tool_call,timestamp
+user,show me the full inventory,,2026-08-04T17:51:56.915086+00:00
+agent,,list_inventory,2026-08-04T17:51:58.647488+00:00
+user,Add 15 kg of arabica beans,,2026-08-04T18:23:16.996495+00:00
+agent,,update_stock,2026-08-04T18:23:17.923916+00:00
+user,Add 15 kg of arabica beans,,2026-08-04T18:29:26.607016+00:00
+agent,,update_stock,2026-08-04T18:29:27.640976+00:00
