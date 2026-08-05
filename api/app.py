@@ -134,3 +134,30 @@ def get_alerts():
     """Return every product whose quantity is currently below its own alert_threshold."""
     products = read_products()
     return [p for p in products if p["quantity"] < p["alert_threshold"]]
+
+
+class ThresholdUpdate(BaseModel):
+    alert_threshold: float
+
+
+@app.patch("/inventory/{product_id}/threshold")
+def update_threshold(product_id: int, update: ThresholdUpdate):
+    """Change the low-stock alert threshold for an existing product."""
+    products = read_products()
+
+    product = next((p for p in products if p["product_id"] == product_id), None)
+    if product is None:
+        raise HTTPException(status_code=404, detail="product not found")
+
+    if update.alert_threshold < 0:
+        raise HTTPException(status_code=400, detail="alert_threshold cannot be negative")
+
+    if product["unit"].lower() == "units" and update.alert_threshold != int(update.alert_threshold):
+        raise HTTPException(
+            status_code=400,
+            detail="alert_threshold must be a whole number for unit 'units'",
+        )
+
+    product["alert_threshold"] = update.alert_threshold
+    write_products(products)
+    return product

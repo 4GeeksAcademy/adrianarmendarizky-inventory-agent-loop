@@ -88,6 +88,25 @@ TOOLS = [
             "parameters": {"type": "object", "properties": {}, "required": []},
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "update_alert_threshold",
+            "description": (
+                "Change the low-stock alert threshold for an EXISTING product — the "
+                "quantity below which it shows up as low stock. Requires the product's "
+                "existing product_id; call list_inventory first if you don't already know it."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "product_id": {"type": "integer", "description": "The ID of the product to update"},
+                    "alert_threshold": {"type": "number", "description": "The new threshold value"},
+                },
+                "required": ["product_id", "alert_threshold"],
+            },
+        },
+    },
 ]
 
 
@@ -115,11 +134,22 @@ def call_get_low_stock_alerts(args):
     return requests.get(f"{API_BASE_URL}/inventory/alerts").json()
 
 
+def call_update_alert_threshold(args):
+    resp = requests.patch(
+        f"{API_BASE_URL}/inventory/{args['product_id']}/threshold",
+        json={"alert_threshold": args["alert_threshold"]},
+    )
+    if resp.status_code >= 400:
+        return {"error": resp.json().get("detail", "request failed")}
+    return resp.json()
+
+
 TOOL_FUNCTIONS = {
     "list_inventory": call_list_inventory,
     "add_product": call_add_product,
     "update_stock": call_update_stock,
     "get_low_stock_alerts": call_get_low_stock_alerts,
+    "update_alert_threshold": call_update_alert_threshold,
 }
 
 

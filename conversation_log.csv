@@ -56,3 +56,16 @@ user,what's running low?,,2026-08-05T00:26:27.062060+00:00
 agent,,get_low_stock_alerts,2026-08-05T00:26:27.547828+00:00
 tool,"[{""product_id"": 2, ""name"": ""arabica beans"", ""quantity"": 1.0, ""unit"": ""kg"", ""alert_threshold"": 10.0}, {""product_id"": 3, ""name"": ""cold brew"", ""quantity"": 8.0, ""unit"": ""liters"", ""alert_threshold"": 10.0}]",get_low_stock_alerts,2026-08-05T00:26:27.551560+00:00
 agent,"The arabica beans and the cold brew are currently running low, with quantities of 1 kg and 8 liters, respectively, which are below or close to their alert thresholds of 10 kg and 10 liters.",,2026-08-05T00:26:28.163619+00:00
+user,Adjust the alert threshold for cold brew to 5 liters instead of 10,,2026-08-05T00:55:02.702452+00:00
+user,what's in my inventory?,,2026-08-05T00:55:35.498174+00:00
+agent,,list_inventory,2026-08-05T00:55:36.369209+00:00
+tool,"[{""product_id"": 1, ""name"": ""colombian beans"", ""quantity"": 27.0, ""unit"": ""kg"", ""alert_threshold"": 10.0}, {""product_id"": 2, ""name"": ""arabica beans"", ""quantity"": 1.0, ""unit"": ""kg"", ""alert_threshold"": 10.0}, {""product_id"": 3, ""name"": ""cold brew"", ""quantity"": 8.0, ""unit"": ""liters"", ""alert_threshold"": 10.0}]",list_inventory,2026-08-05T00:55:36.384173+00:00
+agent,"You have colombian beans, arabica beans, and cold brew in your inventory. The quantities are 27 kg of colombian beans, 1 kg of arabica beans, and 8 liters of cold brew.",,2026-08-05T00:55:36.593123+00:00
+user,Adjust the alert threshold for cold brew to 5 liters,,2026-08-05T00:55:57.486635+00:00
+agent,,update_alert_threshold,2026-08-05T00:55:57.798354+00:00
+tool,"{""product_id"": 3, ""name"": ""cold brew"", ""quantity"": 8.0, ""unit"": ""liters"", ""alert_threshold"": 5.0}",update_alert_threshold,2026-08-05T00:55:57.802879+00:00
+agent,The alert threshold for cold brew has been adjusted to 5 liters.,,2026-08-05T00:55:57.992968+00:00
+user,I sold 6 liters of cold brew,,2026-08-05T00:56:16.294336+00:00
+agent,,update_stock,2026-08-05T00:56:16.658347+00:00
+tool,"{""product_id"": 3, ""name"": ""cold brew"", ""quantity"": 2.0, ""unit"": ""liters"", ""alert_threshold"": 5.0}",update_stock,2026-08-05T00:56:16.664725+00:00
+agent,"You now have 2 liters of cold brew left in stock. Since this is below the alert threshold of 5 liters, you should consider restocking.",,2026-08-05T00:56:16.962856+00:00
