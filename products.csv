@@ -1,0 +1,4 @@
+product_id,name,quantity,unit,alert_threshold
+1,colombian beans,27.0,kg,10.0
+2,arabica beans,1.0,kg,10.0
+3,cold brew,8.0,liters,10.0

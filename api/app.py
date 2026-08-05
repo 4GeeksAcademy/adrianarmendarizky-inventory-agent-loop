@@ -1,7 +1,7 @@
 import csv
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -9,6 +9,21 @@ app = FastAPI()
 CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "products.csv")
 FIELDNAMES = ["product_id", "name", "quantity", "unit", "alert_threshold"]
 
+def ensure_csv_exists():
+    """Create products.csv with a header row if it's missing, or repair it
+    if the file exists but doesn't start with a valid header."""
+    has_valid_header = False
+    if os.path.exists(CSV_PATH):
+        with open(CSV_PATH, newline="") as f:
+            first_line = f.readline().strip()
+        has_valid_header = first_line == ",".join(FIELDNAMES)
+
+    if not has_valid_header:
+        with open(CSV_PATH, "w", newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
+            writer.writeheader()
+
+ensure_csv_exists()
 
 def read_products():
     """Load every row from products.csv into a list of dicts."""
@@ -24,6 +39,20 @@ def read_products():
             products.append(row)
         return products
 
+
+def get_next_id(products):
+    """Next auto-incrementing product_id: 1 if the file is empty, otherwise max + 1."""
+    if not products:
+        return 1
+    return max(p["product_id"] for p in products) + 1
+
+
+def append_product(product):
+    """Add one new row to products.csv without touching the existing rows."""
+    with open(CSV_PATH, "a", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
+        writer.writerow(product)
+        
 
 @app.get("/inventory")
 def get_inventory():

@@ -21,9 +21,13 @@ MODEL = "llama-3.3-70b-versatile"
 
 SYSTEM_PROMPT = (
     "You are an inventory assistant for Carla's coffee shop supply store. "
-    "Use the available tools to look up or change inventory — never guess at "
-    "quantities or product IDs from memory. update_stock takes a delta (a "
-    "change in quantity), not a new total."
+    "Only call one tool per turn. NEVER invent a product_id — a product_id is "
+    "only valid if it came from an earlier list_inventory or add_product result "
+    "in this exact conversation. If you don't have one, call list_inventory first "
+    "and wait for its result before doing anything else. The word 'add' in a "
+    "request usually means a NEW product (add_product), not an existing one "
+    "(update_stock) — only use update_stock if you already know the product exists. "
+    "update_stock takes a delta (a change in quantity), not a new total."
 )
 
 TOOLS = [
@@ -39,7 +43,11 @@ TOOLS = [
         "type": "function",
         "function": {
             "name": "add_product",
-            "description": "Register a brand new product. Only use this for a product that doesn't exist yet.",
+            "description": (
+                "Register a BRAND NEW product that does not already exist in inventory. "
+                "Use this whenever the user wants to add a product you haven't confirmed "
+                "already exists — check with list_inventory first if you're unsure."
+            ),
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -56,8 +64,11 @@ TOOLS = [
         "function": {
             "name": "update_stock",
             "description": (
-                "Adjust the stock of an EXISTING product by a delta — a change in quantity, "
-                "not a new total. Positive delta for incoming stock, negative for stock going out."
+                "Change the quantity of a product that ALREADY exists, by a delta — "
+                "positive for incoming stock, negative for outgoing, never a new total. "
+                "Requires the product's existing product_id. If you don't already know "
+                "it, call list_inventory first. Never use this to create a product that "
+                "doesn't exist yet — that's what add_product is for."
             ),
             "parameters": {
                 "type": "object",
@@ -142,6 +153,7 @@ def run_agent():
                 model=MODEL,
                 messages=conversation_history,
                 tools=TOOLS,
+                temperature=0,
             )
             message = response.choices[0].message
 
